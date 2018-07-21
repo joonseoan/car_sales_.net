@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ 
+ Author Name : Joon An
+ ID: 991448483
+ Date : July 20, 2018
+ 
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -6,6 +14,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using System.Web.UI;
 
 namespace Assignment3
 {
@@ -41,12 +50,22 @@ namespace Assignment3
           "model VARCHAR(50) NOT NULL," +
           "year CHAR(4) NOT NULL," +
           "colour VARCHAR(50) NOT NULL," +
-          "price NUMERIC(8, 2) NOT NULL," +
+          "price NUMERIC(10, 2) NOT NULL," +
           "user_name VARCHAR(50) NOT NULL," +
           "CONSTRAINT FK_CUSTOMERS_ORDERS FOREIGN KEY(user_name) REFERENCES CUSTOMERS(user_name))";
          
         protected void Application_Start(object sender, EventArgs e)
         {
+
+            ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
+            new ScriptResourceDefinition
+            {
+                Path = "~/scripts/jquery-1.4.1.min.js",
+                DebugPath = "~/scripts/jquery-1.4.1.js",
+                CdnPath = "http://ajax.microsoft.com/ajax/jQuery/jquery-1.4.1.min.js",
+                CdnDebugPath = "http://ajax.microsoft.com/ajax/jQuery/jquery-1.4.1.js"
+
+            });
 
             // initializing con instance cotaining connectioon property
             cnn = new SqlConnection(connectionString);

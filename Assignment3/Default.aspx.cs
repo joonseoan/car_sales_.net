@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ 
+ Author Name : Joon An
+ ID: 991448483
+ Date : July 20, 2018
+ 
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -11,14 +19,19 @@ namespace Assignment3
 {
     public partial class WebForm2 : System.Web.UI.Page
     {
+
         protected void Page_Load(object sender, EventArgs e)
         {
 
         }
-
+        
         protected void Button1_Click(object sender, EventArgs e)
-        {
+        {   
+            // Required field validation. Whent they are invalid, it will stop.
+            if (!this.RequiredFieldValidator1.IsValid || !this.RequiredFieldValidator2.IsValid)
+                return;
 
+            // SQL query by using dataSet (not connected to SQL Server)
             SqlConnection cnn;
             SqlDataAdapter dap;
             System.Data.DataSet ds;
@@ -34,6 +47,8 @@ namespace Assignment3
 
                 dap = new SqlDataAdapter(queryString, cnn);
                 ds = new DataSet();
+
+                // DataSet object that stores the query result.
                 dap.Fill(ds, "Customer");
 
                 string userName = this.TextBox1.Text;
@@ -41,24 +56,27 @@ namespace Assignment3
 
                 foreach (DataRow row in ds.Tables["Customer"].Rows)
                 {
-                    if(userName == row["user_name"].ToString())
+                    // ToLower and Trim methods to preven the case sensitive and white space issues
+                    if(userName.ToLower().Trim() == row["user_name"].ToString())
                     {
 
-                        if (password == row["password"].ToString())
+                        if (password.Trim() == row["password"].ToString())
                         {
                             
+                            // Session to store data from database and send to another page
                             Session["UserName"] = row["user_name"];
                             Session["Address"] = row["address"];
                             Session["PostalCode"] = row["postal_code"];
                             Session["Phone"] = row["phone"];
                             Session["Email"] = row["email"];
 
+                            // When login is successful
                             Response.Redirect("Profile.aspx");
 
                         }
                         else
                         {
-
+                            // When wrong is password only
                             this.Label1.Text = "You got a wrong password.";
                             return;
 
@@ -66,8 +84,8 @@ namespace Assignment3
 
                     } else
                     {
-
-                        this.Label1.Text = "You got a wrong customer name.";
+                        // When user name is wrong
+                        this.Label1.Text = "You got a wrong user name. Are you new customer?";
 
                     }
                 
@@ -77,6 +95,17 @@ namespace Assignment3
             {
 
                 Response.Write(ex.Message);
+
+            }
+            finally
+            {
+
+                if (cnn.State == ConnectionState.Open)
+                {
+
+                    cnn.Close();
+
+                }
 
             }
 
